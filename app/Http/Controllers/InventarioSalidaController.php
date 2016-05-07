@@ -103,4 +103,40 @@ class InventarioSalidaController extends Controller
 
         
     }
+    
+    public function getElementoById(Request $request){
+        if ($request->isMethod('get')){   
+            $data = $request->all();
+            $inventario= InventarioModel::where('elemento_id' , '=', $data['elemento'])->first();
+             $grupo=GrupoModel::where('id' , '=', $inventario['grupo_id'])->first();
+             $dependencias=DependenciaModel::where('id' , '=', $inventario['dependencia_id'])->first();
+             $response['inventario'] =$inventario;
+             $response['grupo'] = $grupo;
+             $response['dependencia'] = $dependencias;
+            return response()->json(['response' => $response ]); 
+        }
+    }
+
+    public function descontarElemento(Request $request){
+         if ($request->isMethod('get')){   
+            $data = $request->all();
+            $inventario= InventarioModel::where('elemento_id' , '=', $data['elemento_id'])->first();
+            $valueAct= $inventario['cantidad'];
+            $valDiscount =$data['canDiconunt'];
+            if ($valDiscount > $valueAct || $valDiscount == 0) {
+                $response['mensaje'] = "El valor ingresado para descontar no es valido";
+                $response['response']['code']  = "error";
+            }else{
+                $valueRes= $inventario['cantidad'] - $data['canDiconunt']; 
+                $inventario->cantidad = $valueRes;
+                $inventario->save();
+                $response['response']['residuo'] = $valueRes;
+                $response['response']['code'] = "done";
+                $response['mensaje'] = "Se ha realizado el descuento de la cantidad del eleento";
+            }
+            
+            return response()->json(['response' => $response ]); 
+        }
+        
+    }
 }
