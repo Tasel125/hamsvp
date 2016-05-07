@@ -34,6 +34,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::resource('dependencias','DependenciasController');
 	Route::resource('inventarios','InventariosController');
 	Route::resource('inventarioSalida','InventarioSalidaController');
+	Route::resource('/getElementoById', 'InventarioSalidaController@getElementoById');
+	Route::resource('/descontarElemento', 'InventarioSalidaController@descontarElemento');
 	
 	//Route::resource('inventario/detalle','InventarioController@detalle');
 
